@@ -1,3 +1,4 @@
+const { internet } = require('faker');
 const faker = require('faker');
 
 // Here we define all the logic.
@@ -20,7 +21,14 @@ class ProductsService {
     }
   }
 
-  create() {}
+  create(data) {
+    const newProduct = {
+      id: faker.datatype.uuid(),
+      ...data,
+    };
+    this.products.push(newProduct);
+    return this.products;
+  }
 
   find() {
     return this.products;
@@ -30,7 +38,29 @@ class ProductsService {
     return this.products.find((item) => item.id === id);
   }
 
-  update() {}
+  // Using spread operators we can avoid errors like replacing everything instead of just one property.
+
+  update(id, changes) {
+    const index = this.products.findIndex((item) => item.id === id);
+    if (index === -1) {
+      throw new Error('Product not found');
+    }
+    const product = this.products[index];
+    this.products[index] = {
+      ...product,
+      ...changes,
+    };
+    return this.products[index];
+  }
+  delete(id) {
+    const index = this.products.findIndex((item) => item.id === id);
+    if (index === -1) {
+      throw new Error('Product not found');
+    }
+    // array.splice(position, elements_to_delete_from_position);
+    this.products.splice(index, 1);
+    return { id };
+  }
 }
 
 module.exports = ProductsService;

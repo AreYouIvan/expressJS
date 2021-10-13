@@ -4,7 +4,6 @@ const UsersService = require('../services/user.service');
 
 const service = new UsersService();
 
-
 // Working on query params
 router.get('/', (req, res) => {
   const { limit, offset } = req.query;
@@ -33,18 +32,14 @@ router.get('/:userId', (req, res) => {
 // Create
 router.post('/', (req, res) => {
   const body = req.body;
-  res.json({
-    message: 'user created',
-    body,
-  });
+  const newUser = service.create(body);
+  res.status(200).json(newUser);
 });
 // Delete
 router.delete('/:userId', (req, res) => {
   const { userId } = req.params;
-  res.json({
-    message: 'User has deleted',
-    userId,
-  });
+  const rta = service.delete(userId);
+  res.json(rta);
 });
 
 // Put
@@ -62,11 +57,8 @@ router.put('/:userId', (req, res) => {
 router.patch('/:userId', (req, res) => {
   const { userId } = req.params;
   const body = req.body;
-  res.json({
-    message: 'User updated',
-    data: body,
-    userId,
-  });
+  const user = service.update(userId, body);
+  res.json(user);
 });
 
 module.exports = router;

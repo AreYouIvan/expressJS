@@ -1,25 +1,28 @@
-const getConnection = require('../libs/postgres');
 const boom = require('@hapi/boom');
+const getConnection = require('../libs/postgres');
 
-
-class UsersService {
+class UserService {
   constructor() {}
+
+  async create(data) {
+    return data;
+  }
 
   async find() {
     const client = await getConnection();
-    const res = await client.query('SELECT * FROM public.tasks');
-    return res.rows;
+    const rta = await client.query('SELECT * FROM public.tasks');
+    return rta.rows;
   }
 
   async findOne(id) {
     return { id };
   }
-  async create(data) {
-    return data;
-  }
 
   async update(id, changes) {
-    return { id, changes };
+    return {
+      id,
+      changes,
+    };
   }
 
   async delete(id) {
@@ -27,4 +30,4 @@ class UsersService {
   }
 }
 
-module.exports = UsersService;
+module.exports = UserService;

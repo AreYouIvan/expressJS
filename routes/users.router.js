@@ -1,61 +1,78 @@
-const UsersService = require('../services/user.service');
 const express = require('express');
-const router = express.Router();
-const service = new UsersService();
 
+const UserService = require('./../services/user.service');
+const validatorHandler = require('./../middlewares/validator.handler');
+const { getUserSchema, updateUserSchema, createUserSchema } = require('./../schemas/user.schema');
+
+const router = express.Router();
+const service = new UserService();
 
 // Working on query params
 
 router.get('/', async (req, res, next) => {
   try {
-    const users = service.find();
+    const users = await service.find();
     res.json(users);
   } catch (error) {
-    next(error)
+    next(error);
   }
 });
 
-router.get('/filter', (req, res) => {
-  res.send('soy un filter.');
-});
-
-// Creating the users end point.
-router.get('/:userId', (req, res) => {
-  const { userId } = req.params;
-  const user = service.findOne(userId);
-  res.json(user);
-});
+router.get('/:id',
+  validatorHandler(getUserSchema, 'params'),
+  async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const category = await service.findOne(id);
+      res.json(category);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 
 // Create
-router.post('/', (req, res) => {
-  const body = req.body;
-  const newUser = service.create(body);
-  res.status(200).json(newUser);
-});
-// Delete
-router.delete('/:userId', (req, res) => {
-  const { userId } = req.params;
-  const rta = service.delete(userId);
-  res.json(rta);
-});
-
-// Put
-router.put('/:userId', (req, res) => {
-  const { userId } = req.params;
-  const body = req.body;
-  res.json({
-    message: 'User updated',
-    data: body,
-    userId,
-  });
-});
+router.post('/',
+  validatorHandler(createUserSchema, 'body'),
+  async (req, res, next) => {
+    try {
+      const body = req.body;
+      const newCategory = await service.create(body);
+      res.status(201).json(newCategory);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 
 // Patch
-router.patch('/:userId', (req, res) => {
-  const { userId } = req.params;
-  const body = req.body;
-  const user = service.update(userId, body);
-  res.json(user);
-});
+router.patch('/:id',
+  validatorHandler(getUserSchema, 'params'),
+  validatorHandler(updateUserSchema, 'body'),
+  async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const body = req.body;
+      const category = await service.update(id, body);
+      res.json(category);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+// Delete
+router.delete('/:id',
+  validatorHandler(getUserSchema, 'params'),
+  async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      await service.delete(id);
+      res.status(201).json({id});
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 
 module.exports = router;

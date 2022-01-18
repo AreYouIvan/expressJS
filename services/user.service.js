@@ -1,4 +1,4 @@
-const boom = require('@hapi/boom');
+// const boom = require('@hapi/boom');
 const pool = require('../libs/postgres.pool');
 
 class UserService {

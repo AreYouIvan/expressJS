@@ -7,10 +7,10 @@ const { dbHost, dbPassword, dbUser, dbName, dbPort } = config;
 
 const USER = encodeURIComponent(dbUser);
 const PASSWORD = encodeURIComponent(dbPassword);
-const URI = `postgres://${USER}:${PASSWORD}@${dbHost}:${dbPort}/${dbName}`;
+const URI = `mysql://${USER}:${PASSWORD}@${dbHost}:${dbPort}/${dbName}`;
 
 const sequelize = new Sequelize(URI, {
-  dialect: 'postgres',
+  dialect: 'mysql',
   logging: console.log,
 });
 

@@ -2,7 +2,7 @@
 
 const { DataTypes } = require('sequelize');
 
-const { CUSTOMER_TABLE } = require('./../models/customer.model');
+const { CUSTOMER_TABLE } = require('../models/customer.model');
 
 module.exports = {
   up: async (queryInterface) => {
@@ -14,7 +14,7 @@ module.exports = {
     });
   },
 
-  down: async (queryInterface) => {
+  down: async () => {
     // await queryInterface.dropTable(CUSTOMER_TABLE);
   },
 };

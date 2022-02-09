@@ -39,9 +39,9 @@ class Category extends Model {
       sequelize,
       tableName: CATEGORY_TABLE,
       modelName: 'Category',
-      timestamps: false,
+      timestamps: false
     };
   }
 }
 
-module.exports = { CATEGORY_TABLE, CategorySchema, Category };
+module.exports = { Category, CategorySchema, CATEGORY_TABLE };

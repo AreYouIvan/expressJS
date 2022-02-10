@@ -7,18 +7,19 @@ const {
   createProductSchema,
   updateProductSchema,
   getProductSchema,
-} = require('./../schemas/product.schema');
+} = require('../schemas/product.schema');
 
 const service = new ProductsService();
 
-router.get('/', async (req, res) => {
-  const products = await service.find();
-  res.json(products);
+router.get('/', async (req, res, next) => {
+  try {
+    const products = await service.find();
+    res.json(products);
+  } catch (error) {
+    next(error);
+  }
 });
 
-router.get('/filter', (req, res) => {
-  res.send('soy un filter.');
-});
 
 router.get(
   '/:id',
@@ -34,17 +35,20 @@ router.get(
   }
 );
 
-// Creating a new product.
-// newProduct is from the service.
 router.post(
   '/',
   validatorHandler(createProductSchema, 'body'),
-  async (req, res) => {
-    const body = req.body;
-    const newProduct = await service.create(body);
-    res.status(201).json(newProduct);
+  async (req, res, next) => {
+    try {
+      const body = req.body;
+      const newProduct = await service.create(body);
+      res.status(201).json(newProduct);
+    } catch (error) {
+      next(error);
+    }
   }
 );
+
 
 router.put('/:id', (req, res) => {
   const { id } = req.params;
@@ -56,7 +60,8 @@ router.put('/:id', (req, res) => {
   });
 });
 // When there's two middlewares you can simply put down next to the other.
-router.patch('/:id',
+router.patch(
+  '/:id',
   validatorHandler(getProductSchema, 'params'),
   validatorHandler(updateProductSchema, 'body'),
   async (req, res, next) => {
@@ -71,11 +76,20 @@ router.patch('/:id',
   }
 );
 
-// rta = respuesta.
-router.delete('/:id', async (req, res) => {
-  const { id } = req.params;
-  const rta = await service.delete(id);
-  res.json(rta);
-});
+
+router.delete(
+  '/:id',
+  validatorHandler(getProductSchema, 'params'),
+  async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      await service.delete(id);
+      res.status(201).json({ id });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
 
 module.exports = router;

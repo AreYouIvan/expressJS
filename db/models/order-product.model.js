@@ -1,4 +1,5 @@
 const { Model, DataTypes, Sequelize } = require('sequelize');
+
 const { ORDER_TABLE } = require('./order.model');
 const { PRODUCT_TABLE } = require('./product.model');
 
@@ -17,6 +18,10 @@ const OrderProductSchema = {
     field: 'create_at',
     defaultValue: Sequelize.NOW,
   },
+  amount: {
+    allowNull: false,
+    type: DataTypes.INTEGER,
+  },
   orderId: {
     field: 'order_id',
     allowNull: false,
@@ -28,16 +33,12 @@ const OrderProductSchema = {
     onUpdate: 'CASCADE',
     onDelete: 'SET NULL',
   },
-  amount: {
-    allowNull: false,
-    type: DataTypes.INTEGER,
-  },
   productId: {
-    field: 'product_table',
+    field: 'product_id',
     allowNull: false,
     type: DataTypes.INTEGER,
     references: {
-      model: ORDER_TABLE,
+      model: PRODUCT_TABLE,
       key: 'id',
     },
     onUpdate: 'CASCADE',
@@ -47,6 +48,7 @@ const OrderProductSchema = {
 
 class OrderProduct extends Model {
   static associate(models) {
+    //
   }
 
   static config(sequelize) {
@@ -59,4 +61,8 @@ class OrderProduct extends Model {
   }
 }
 
-module.exports = { ORDER_PRODUCT_TABLE, OrderProductSchema, OrderProduct };
+module.exports = {
+  OrderProduct,
+  ORDER_PRODUCT_TABLE,
+  OrderProductSchema,
+};
